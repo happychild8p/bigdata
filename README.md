@@ -1,10 +1,9 @@
 This repository "BigData&AI" contains scripts for:
 
-	- Korea Data Agency project: bigdata and software intelligence program
-	- Korea Data Agency: Case Contest project
+	- Big data analysis and Intelligence software project
 
 	Used language:
 
-	- Python3
-	- R
+	- Python3 with jupyter and vim
+	- R with R Studio
 
