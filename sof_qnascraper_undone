@@ -1,0 +1,56 @@
+#!/usr/bin/python3
+
+import re
+from bs4 import BeautifulSoup
+import urllib.request as req
+
+def crawl_question(search_tag, max_page):
+    link_list = []
+    q_list = []
+    for page in range(1, max_page+1):
+        # i is current page
+        s_link = "https://stackoverflow.com/questions/tagged/{}?tab=newest&page={}".format(search_tag, page)  
+        open_link = req.urlopen(s_link)
+        soup = BeautifulSoup(open_link, 'html.parser')
+        q_links = soup.select("div.summary > h3 > a")
+        for link in q_links:
+            q_list.append(link.text)
+            link_list.append("https://stackoverflow.com"+link.attrs['href'])
+    q_and_link = dict(zip(q_list, link_list))
+    return q_and_link
+
+def crawl_answer(q_and_link):
+    q_list = list(q_and_link.keys())
+    link_list = list(q_and_link.values())
+    a_list = []
+    for each in link_list:
+        open_link = req.urlopen(each)
+        soup = BeautifulSoup(open_link, 'html.parser')
+        n_ans = soup.select("#answers-header > div > div.grid--cell.fl1 > h2 > span")
+        n_ans = int(n_ans[0].string)
+        answer = soup.select("div.answercell post-layout--right > div.post-text")
+        if n_ans == 0:
+            a_list.append("No answer")
+        elif n_ans != 0:
+            for i in range(n_ans):
+                print(answer)
+                #a_list.append(answer)
+"""
+        for i in range(n_ans):
+            elem = "#answer_{} > div._endContents.c-heading-answer__content ".format(i+1)
+            answers = soup.select(elem)
+            for answer in answers:
+                a_list.append(answer.text.strip("\n"))
+
+        total[q_list[q_num]] = a_list
+        q_num = q_num + 1
+        a_list = []
+    return total
+"""
+def main():
+    #search_tag = str(input("Type a tag name to search for: "))
+    #max_page = int(input("How many pages you need to lookup?: "))
+    q_dict = (crawl_question("python", 1))
+    crawl = crawl_answer(q_dict)
+    
+main()
